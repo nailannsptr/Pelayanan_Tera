@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perhitungan Capaian Hasil Tera</title>
+    <!-- Menghubungkan file CSS untuk styling -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Library ExcelJS untuk export ke Excel dengan styling (dari CDN, butuh internet) -->
+    <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
+    <!-- Library FileSaver untuk simpan file (dari CDN) -->
+    <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+</head>
+<body>
+<!-- Container utama yang membungkus seluruh konten (supaya lebar terbatas & rata tengah) -->
+<div class="container">
+    <!-- Header dengan judul dan logo -->
+    <div class="header-title">
+        <h1>PERHITUNGAN CAPAIAN KINERJA UPTD METROLOGI LEGAL DALAM PELAYANAN TERA ULANG DI PASAR TRADISIONAL</h1>
+        <!-- Baris logo: kiri dan kanan
+             Logo sama dipakai 2x (kiri & kanan) sebagai ornamen.
+             Ukuran diatur di style.css (.logo-header / .logo-left / .logo-right) -->
+        <div class="logos-row">
+            <div class="logo-group-left">
+                <img src="download-logo-pemkot-surabaya-0.png" alt="Logo Pemkot" class="logo-header logo-pemkot">
+                <img src="logo_Metrologi-removebg-preview.png" alt="Logo Metrologi" class="logo-header logo-left">
+            </div>
+            <div class="logo-group-right">
+                <img src="logo_Metrologi-removebg-preview.png" alt="Logo Metrologi" class="logo-header logo-right">
+                <img src="download-logo-pemkot-surabaya-0.png" alt="Logo Pemkot" class="logo-header logo-pemkot">
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 1: Input Tahun (diubah user, dipakai untuk judul laporan Excel) -->
+    <section class="card">
+        <div class="header-info">
+            <div class="input-group">
+                <label for="inputTahun">Tahun</label>
+                <!-- Input tahun, default 2026. Nilainya terbaca di script.js via id="inputTahun" -->
+                <input type="text" id="inputTahun" placeholder="Tahun" value="2026">
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: KETENTUAN DINAS (Target Dinas) -->
+    <section class="card">
+        <div class="header">
+            <h2>Hasil Pendataan UTTP Pasar</h2>
+            <!-- Tombol untuk menambah baris target dinas baru -->
+            <button id="btnTambahDinas" type="button">+ Tambah Ketentuan</button>
+        </div>
+
+        <!-- Tabel Target Dinas -->
+        <table id="tabelDinas">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Nama</th>
+                    <th>T. Meja</th>       <!-- Timbangan Meja -->
+                    <th>T. Pegas</th>      <!-- Timbangan Pegas -->
+                    <th>T. Sentismal</th>  <!-- Timbangan Sentismal -->
+                    <th>T. Elektronik</th> <!-- Timbangan Elektronik -->
+                    <th>T. Neraca</th>     <!-- Timbangan Neraca -->
+                    <th>AT. Meja</th>      <!-- AT = Alat Timbangan Meja (T. Meja x 5) -->
+                    <th>AT. Neraca</th>    <!-- AT = Alat Timbangan Neraca (T. Neraca x 19) -->
+                    <th>Jumlah</th>        <!-- Total semua kolom di atas -->
+                    <th>Aksi</th>          <!-- Tombol hapus -->
+                </tr>
+            </thead>
+            <!-- Body tabel diisi otomatis via JavaScript -->
+            <tbody id="tbodyDinas"></tbody>
+            <tfoot>
+                <tr class="total">
+                    <td></td>
+                    <td><b>TOTAL</b></td>
+                    <!-- Footer total per kolom (diupdate otomatis via JS) -->
+                    <td id="dinasTM">0</td>
+                    <td id="dinasTP">0</td>
+                    <td id="dinasTS">0</td>
+                    <td id="dinasTE">0</td>
+                    <td id="dinasTN">0</td>
+                    <td id="dinasATMeja">0</td>
+                    <td id="dinasATNeraca">0</td>
+                    <td id="dinasJumlah">0</td>
+                    <td></td>
+                </tr>
+            </tfoot>
+        </table>
+    </section>
+
+    <!-- SECTION 3: CAPAIAN PASAR (Pelayanan Tera Ulang) -->
+    <section class="card">
+        <div class="header">
+            <h2>Hasil Pelayanan Tera Ulang</h2>
+            <!-- Tombol untuk menambah baris pasar baru -->
+            <button id="btnTambahPasar" type="button">+ Tambah Pasar</button>
+        </div>
+
+        <!-- Tabel Data Pasar -->
+        <table id="tabelPasar">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Nama Pasar</th>
+                    <th>Alamat</th>
+                    <th>T. Meja</th>
+                    <th>T. Pegas</th>
+                    <th>T. Sentismal</th>
+                    <th>T. Elektronik</th>
+                    <th>T. Neraca</th>
+                    <th>AT. Meja</th>       <!-- Otomatis: T. Meja x 5 -->
+                    <th>AT. Neraca</th>     <!-- Otomatis: T. Neraca x 19 -->
+                    <th>Jumlah</th>         <!-- Total pelayanan pasar ini -->
+                    <th>Capaian (%)</th>    <!-- Persentase capaian vs target dinas -->
+                    <th>Aksi</th>           <!-- Tombol hapus -->
+                </tr>
+            </thead>
+            <tbody id="tbodyPasar"></tbody>
+            <tfoot>
+                <tr class="total">
+                    <td></td>
+                    <td><b>TOTAL</b></td>
+                    <td></td>
+                    <td id="totalTM">0</td>
+                    <td id="totalTP">0</td>
+                    <td id="totalTS">0</td>
+                    <td id="totalTE">0</td>
+                    <td id="totalTN">0</td>
+                    <td id="atMejaPasar">0</td>
+                    <td id="atNeracaPasarTotal">0</td>
+                    <td id="jumlahPasar">0</td>
+                    <td id="capaianPasar">0 %</td>
+                    <td></td>
+                </tr>
+            </tfoot>
+        </table>
+    </section>
+
+    <!-- SECTION 4: HASIL PERHITUNGAN CAPAIAN -->
+    <section class="card">
+        <h2>Hasil Perhitungan Capaian</h2>
+        <!-- Tabel rekap perbandingan Pelayanan vs Target -->
+        <table id="tabelHasil">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Pasar</th>
+                    <th>Alamat</th>
+                    <th>Jumlah Pelayanan</th>  <!-- Dari tabel Pasar -->
+                    <th>Jumlah Target</th>     <!-- Dari tabel Dinas -->
+                    <th>Capaian (%)</th>       <!-- Pelayanan / Target x 100% -->
+                </tr>
+            </thead>
+            <tbody id="tbodyHasil"></tbody>
+            <tfoot>
+                <tr class="total">
+                    <td></td>
+                    <td><b>TOTAL</b></td>
+                    <td></td>
+                    <td id="hasilPasarTotal">0</td>
+                    <td id="hasilDinasTotal">0</td>
+                    <td id="persentaseTotal">0 %</td>
+                </tr>
+            </tfoot>
+        </table>
+        <!-- Area Export -->
+        <div class="header">
+            <h2>Export Data</h2>
+        </div>
+        <div class="export-actions">
+            <!-- Tombol export ke Excel (menggunakan ExcelJS) -->
+            <button id="btnExportExcel" type="button" class="btn-export">Export ke Excel</button>
+        </div>
+    </section>
+</div>
+
+    <!-- Menghubungkan file JavaScript utama -->
+    <script src="script.js"></script>
+</body>
+</html>
