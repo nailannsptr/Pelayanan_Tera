@@ -361,3 +361,41 @@ small {
         min-width: 140px;
     }
 }
+/* ============ Custom Ukuran Kolom Tabel Pasar ============ */
+
+/* Kolom Nomor */
+#tabelPasar th:first-child,
+#tabelPasar td:first-child {
+    width: 45px !important;
+    min-width: 45px !important;
+    max-width: 45px !important;
+    text-align: center !important;
+}
+
+/* Kolom Nama Pasar */
+#tabelPasar th:nth-child(2),
+#tabelPasar td:nth-child(2) {
+    width: 280px !important;
+    min-width: 280px !important;
+    max-width: 280px !important;
+    text-align: left !important;
+}
+
+/* Kolom Alamat */
+#tabelPasar th:nth-child(4),
+#tabelPasar td:nth-child(4) {
+    width: 450px !important;
+    min-width: 450px !important;
+    max-width: 450px !important;
+    text-align: left !important;
+}
+
+/* Input dalam kolom Nama dan Alamat */
+#tabelPasar input[type="text"] {
+    width: 100%;
+}
+
+#tabelPasar input.alamat-pasar {
+    min-width: 430px;
+    width: 100%;
+}
